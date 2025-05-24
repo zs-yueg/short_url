@@ -32,6 +32,17 @@ class Url {
     await db.read()
     return db.data.urls
   }
+
+  static async delete(shortCode) {
+    await db.read()
+    const index = db.data.urls.findIndex(url => url.shortCode === shortCode)
+    if (index !== -1) {
+      db.data.urls.splice(index, 1)
+      await db.write()
+      return true
+    }
+    return false
+  }
 }
 
 export default Url

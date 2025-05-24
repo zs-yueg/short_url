@@ -34,6 +34,30 @@ class UrlController {
     const urls = await Url.getAll()
     res.json(urls)
   }
+
+  static async getUrlDetail(req, res) {
+    const { shortCode } = req.params
+    const url = await Url.findByShortCode(shortCode)
+    if (url) {
+      res.json(url)
+    } else {
+      res.status(404).json({ error: 'URL not found' })
+    }
+  }
+
+  static async deleteUrl(req, res) {
+    const { shortCode } = req.params
+    try {
+      const success = await Url.delete(shortCode)
+      if (success) {
+        res.json({ message: 'URL deleted successfully' })
+      } else {
+        res.status(404).json({ error: 'URL not found' })
+      }
+    } catch (error) {
+      res.status(500).json({ error: 'Server error' })
+    }
+  }
 }
 
 export default UrlController

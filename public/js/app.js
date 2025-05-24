@@ -37,12 +37,13 @@ document.addEventListener('DOMContentLoaded', () => {
             if (urls.length > 0) {
                 let html = '<h2>历史记录</h2>'
                 urls.forEach(url => {
-                    html += `
+                html += `
                         <div class="url-item">
                             <p>短码: ${url.shortCode}</p>
                             <p>原始URL: <a href="${url.originalUrl}" target="_blank">${url.originalUrl}</a></p>
                             <p>点击次数: ${url.clicks}</p>
                             <p>创建时间: ${new Date(url.createdAt).toLocaleString()}</p>
+                            <button class="delete-btn" data-shortcode="${url.shortCode}">删除</button>
                         </div>
                     `
                 })
@@ -55,4 +56,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 初始加载URL列表
     loadUrlList()
+
+    // 添加删除按钮事件监听
+    document.addEventListener('click', async (e) => {
+        if (e.target.classList.contains('delete-btn')) {
+            const shortCode = e.target.dataset.shortcode
+            try {
+                const response = await fetch(`/api/urls/${shortCode}`, {
+                    method: 'DELETE'
+                })
+                if (response.ok) {
+                    loadUrlList()
+                } else {
+                    alert('删除失败')
+                }
+            } catch (error) {
+                alert('删除失败: ' + error.message)
+            }
+        }
+    })
 })
